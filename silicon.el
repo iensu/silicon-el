@@ -72,6 +72,11 @@ Function needs to have a signature similar to `ido-completing-read', for example
   :type 'boolean
   :group 'silicon)
 
+(defcustom silicon-rounded-corners t
+  "Rounded corners on code window."
+  :type 'boolean
+  :group 'silicon)
+
 (defvar -silicon--background-color-history '())
 (defvar -silicon--cmd-options-history '())
 
@@ -90,15 +95,17 @@ Function needs to have a signature similar to `ido-completing-read', for example
 (defun -silicon--build-command-opts-string (&rest args)
   "Generate a silicon command options string.
 
-Supported options are `:line-numbers', `:window-controls', `:background-color', `:theme' and `:highlight-lines'"
+Supported options are `:line-numbers', `:window-controls', `:background-color', `:rounded-corners', `:theme' and `:highlight-lines'"
   (let* ((show-line-numbers (or (plist-get args :line-numbers) silicon-show-line-numbers))
          (show-window-controls (or (plist-get args :window-controls) silicon-show-window-controls))
+         (rounded-corners (or (plist-get args :rounded-corners) silicon-rounded-corners))
          (background-color (or (plist-get args :background-color) silicon-default-background-color))
          (theme (or (plist-get args :theme) silicon-default-theme))
          (highlight-lines (plist-get args :highlight-lines))
 
          (opts `(,(when (not show-line-numbers) "--no-line-number")
                  ,(when (not show-window-controls) "--no-window-controls")
+                 ,(when (not rounded-corners) "--no-round-corner")
                  ,(format "--background '%s'" background-color)
                  ,(when theme (format "--theme '%s'" theme))
                  ,(when highlight-lines (format "--highlight-lines '%s'" highlight-lines)))))
@@ -167,13 +174,15 @@ allows for direct editing of the options string."
                                            silicon-default-background-color))
                              (highlight-lines (read-string "Highlight lines: " nil nil nil))
                              (show-line-numbers (yes-or-no-p "Add line numbers? "))
-                             (show-window-controls (yes-or-no-p "Add window controls? ")))
+                             (show-window-controls (yes-or-no-p "Add window controls? "))
+                             (rounded-corners (yes-or-no-p "Rounded corners? ")))
                          (-silicon--build-command file-path
                                                   (-silicon--build-command-opts-string :theme theme
                                                                                        :background-color background-color
                                                                                        :highlight-lines (if (string= "" highlight-lines) nil highlight-lines)
                                                                                        :line-numbers show-line-numbers
-                                                                                       :window-controls show-window-controls)
+                                                                                       :window-controls show-window-controls
+                                                                                       :rounded-corners rounded-corners)
                                                   t)))
 
                       (t (-silicon--build-command file-path (-silicon--build-command-opts-string))))))
