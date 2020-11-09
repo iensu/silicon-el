@@ -51,7 +51,9 @@
   :group 'silicon)
 
 (defcustom silicon-completion-function 'ido-completing-read
-  "Function to use for completion."
+  "Function to use for completion.
+
+Function needs to have a signature similar to `ido-completing-read', for example `ivy-completing-read'."
   :type 'function
   :group 'silicon)
 
@@ -119,11 +121,12 @@ Supported options are `:line-numbers', `:window-controls', `:background-color', 
   "Set the default silicon theme. This command allows you to select from the list of available themes."
   (interactive)
   (defvar silicon-available-themes)
-  (setq silicon-default-theme (ido-completing-read "Select theme: "
-                                                   silicon-available-themes
-                                                   nil
-                                                   (not (null silicon-available-themes))
-                                                   silicon-default-theme)))
+  (setq silicon-default-theme (funcall silicon-completion-function
+                                       "Select theme: "
+                                       silicon-available-themes
+                                       nil
+                                       (not (null silicon-available-themes))
+                                       silicon-default-theme)))
 
 (defun silicon-buffer-file-to-png (universal-arg)
   "Generate a PNG of the current buffer file. By default the PNG will be saved to the same directory as the
