@@ -144,6 +144,7 @@ Supported options are `:line-numbers', `:window-controls', `:background-color', 
                    ,file-path)
                  " ")))
 
+;;;###autoload
 (defun silicon-set-default-theme ()
   "Set the default silicon theme. This command allows you to select from the list of available themes."
   (interactive)
@@ -155,6 +156,7 @@ Supported options are `:line-numbers', `:window-controls', `:background-color', 
                                        (not (null silicon-available-themes))
                                        silicon-default-theme)))
 
+;;;###autoload
 (defun silicon-buffer-file-to-png (universal-arg)
   "Generate a PNG of the current buffer file. By default the PNG will be saved to the same directory as the
 buffer file.
